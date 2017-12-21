@@ -1,4 +1,4 @@
-// find prim
+// find < input's prim
 //
 // 1. input
 // 2. start from 1 to input
@@ -35,6 +35,14 @@ int main(int argc, char* argv[]) {
 }
 
 int test(int num) {
+    int sqrt_num = (int) sqrt(num)
+    int isPrim = 1;
+    for(int i = 2 ; i < num ; i++ ) {
+        if(num%i == 0) {
+            isPrim = 0;
+            break;
+        }
+    }
 
-    return 0;
+    return isPrim;
 }
