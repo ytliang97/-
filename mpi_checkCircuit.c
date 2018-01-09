@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <mpi.h>
+#define root 0
 
 int checkCircuit(int []);
 int print(int, int []);
@@ -11,9 +12,9 @@ int main(int argc, char* argv[]){
 	}
     /*	a)save 16 bit 0/1 in the circuit array. save integer from 0 to 65535
             a.1) divide 65535 to process 0 ~ p.
-                E.g. divide 4 process:
-                    process[0] compute 0,4,8,...
-                    process[1] compute 1,5,9,...
+                E.g. divide 4(2) process:
+                    process[0(0)] compute 0(0),4(2),8(4),...
+                    process[1(1)] compute 1(1),5(3),9(5),...
                     process[2] compute 2,6,10,...
                     process[3] compute 3,7,11,...
 
@@ -35,10 +36,10 @@ int main(int argc, char* argv[]){
         printf("%d", pnum);
     }
 */
-    for(int i = 0;i < 65536;i++) {
-		int j=0;
-
-		// b)
+    for(int i = pid;i < 65536;i+=pnum) {
+        
+        // b)
+        int j=0;
 	  	for(int k = 15; k >= 0; k--) {
 	   		int binary = (i >> k) & 1;
 	   		circuit[j] = binary;
@@ -55,11 +56,13 @@ int main(int argc, char* argv[]){
     }
     
     // c.2)
+    MPI_Reduce(oprand, result, count, type, operator, root, MPI_COMM_WORLD);
+    MPI_Finalize();/*put it here to deal with process[0] finish early then any other process*/
     if(pid == 0) {
         printf("Process 0 is done\n");
         printf("total: %d\n",count);
     }
-    MPI_Finalize();
+
 
 	return 0;
 }
