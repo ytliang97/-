@@ -3,13 +3,13 @@
 /*Repeat*/
     /* a) Mark all multiples of k between k^2 and n*/
     /* b) Find the smallest number greater than k that is unmarked, Set k to the new value.*/
-    /* c) Until k^2 > n
+    /* c) Until k^2 > n*/
 /*The unmarked numbers are primes*/
 #include <stdio.h>
 #define unmarked 0
 #define marked 1
-int main(int argc, int* argv[]) {
-    int N = argv[1];
+int main(int argc, char* argv[]) {
+    int N = strtol(argv[1], NULL, 10);
     
     /*Create a list of natural numbers 2,3,4,...,n,none of which is marked.*/
     int *list = (int *) malloc((N+1)*sizeof(int));
@@ -24,11 +24,12 @@ int main(int argc, int* argv[]) {
     /* b) Find the smallest number greater than k that is unmarked, Set k to the new value.*/
     /* c) Until k^2 > n */
     while(1) {
-        if(k*k < n) {
-           for(i = k;i <= n;i*=i) { // a)
-               *(list + i) = marked;
+        if(k*k < N) {
+           for(int i = k;i <= n;i++) { // a)
+                if(i % k == 0)   
+                    *(list + i) = marked;
            }
-           for(i = k;i <= n;i++) { // b)
+           for(int i = k;i <= n;i++) { // b)
                if(*(list + i) == unmarked) {
                    k = i;
                    break;
@@ -40,9 +41,9 @@ int main(int argc, int* argv[]) {
 
     /*The unmarked numbers are primes*/
     int count = 0;
-    for(i = k;i <= n;i++) {
+    for(int i = 2;i <= n;i++) {
         if(*(list + i) == unmarked) {
-            printf("%d", *(list + i));
+//            printf("%d ", i);
             count++;
         }
     }
