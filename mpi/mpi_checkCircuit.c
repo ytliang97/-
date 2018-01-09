@@ -23,12 +23,15 @@ int main(int argc, char* argv[]){
             c.1) let process id) circuit
             c.2) let process[0] print total available and total time.
 	*/
-	int count=0;
+    int count = 0;
+    int global_count = 0;
     // a)
     // a.1)
+    double t1, t2;
     int pid;
     int pnum;
     MPI_Init(&argc, &argv);
+    t1 = MPI_Wtime();
     MPI_Comm_rank(MPI_COMM_WORLD, &pid);
     MPI_Comm_size(MPI_COMM_WORLD, &pnum);
 
@@ -56,13 +59,19 @@ int main(int argc, char* argv[]){
     }
     
     // c.2)
-    MPI_Reduce(oprand, result, count, type, operator, root, MPI_COMM_WORLD);
-    MPI_Finalize();/*put it here to deal with process[0] finish early then any other process*/
+    MPI_Reduce(&count, &global_count, 1, MPI_INT, MPI_SUM, root, MPI_COMM_WORLD);/*collect total available*/
+    t2 = MPI_Wtime();
+    double ptime = t2 - t1;
+    double global_time;
+    MPI_Reduce(&ptime, &global_time, 1, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);/*total process spend on computing*/
+//    printf("\n%d)%f\n", pid, ptime);    
+    MPI_Barrier(MPI_COMM_WORLD);
     if(pid == 0) {
         printf("Process 0 is done\n");
-        printf("total: %d\n",count);
+        printf("total: %d\n", global_count);
+        printf("average take %.3f time\n", global_time/pnum);
     }
-
+    MPI_Finalize();
 
 	return 0;
 }

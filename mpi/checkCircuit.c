@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 int checkCircuit(int []);
 int main(int argc, char* argv[]){
@@ -14,6 +15,8 @@ int main(int argc, char* argv[]){
 	
 	int count=0;
 	// a)
+	clock_t t1, t2;
+	t1 = clock();
 	for(int i = 0;i < 65536;i++) {
 		int j=0;
 
@@ -27,16 +30,19 @@ int main(int argc, char* argv[]){
 		// c)
 		int output = checkCircuit(circuit);
 		if (output == 1) {
-			printf("process)");
+			printf("pid)");
             for(int k=0;k<16;k++){
                 printf("%d", circuit[k]);
             }
             printf("\n");
             count++;
         }
-    }
+	}
+	t2 = clock();
+	float global_time = (float)(t2 - t1) / CLOCKS_PER_SEC;
     printf("Process 0 is done\n");
 	printf("total: %d\n",count);
+	printf("total take %f sec\n", global_time);
 
 	return 0;
 }
